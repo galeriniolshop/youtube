@@ -35,8 +35,9 @@ Streamlit Cloud memakai `packages.txt` untuk memasang FFmpeg.
 2. Buat **OAuth Client ID → Web application**.
 3. Tambahkan URL aplikasi sebagai **Authorized redirect URI**. Nilai default app ditampilkan di sidebar; masukkan URL yang sama persis, tanpa path tambahan jika tidak digunakan.
 4. Di sidebar Orbit Studio, upload file OAuth JSON atau isi client ID dan secret.
-5. Buka **Channel manager → Buka Google OAuth**. Setelah consent, callback akan menambahkan channel ke daftar.
-6. Untuk deployment, pakai Streamlit secrets. Template tersedia di `.streamlit/secrets.toml.example`.
+5. Untuk profil quick-connect bawaan, tambahkan `PREDEFINED_YOUTUBE_CLIENT_SECRET` ke Streamlit Cloud Secrets lalu tekan **Gunakan OAuth predefined · 1 klik**. Client ID dan redirect URI sudah disiapkan di `app.py`, sedangkan secret tidak pernah disimpan di repository.
+6. Buka **Channel manager → Buka Google OAuth**. Setelah consent, callback akan menambahkan channel ke daftar.
+7. Untuk deployment, pakai Streamlit secrets. Template tersedia di `.streamlit/secrets.toml.example`.
 
 Pola callback dan manual code exchange dibuat kompatibel dengan pola login pada repo referensi:
 <https://github.com/missquental/serverliveupdate1>
