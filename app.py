@@ -23,9 +23,8 @@ APP_TAGLINE = "YouTube operations, dibuat lebih rapi."
 NAV_ITEMS = ["Dashboard", "Channel manager", "Media studio", "SEO lab", "Scheduler", "Analytics"]
 TIMEZONES = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Singapore", "UTC"]
 # Quick-connect OAuth profile from the supplied reference project.
-# The client secret is intentionally loaded from Streamlit secrets instead of
-# being committed to source control. Set PREDEFINED_YOUTUBE_CLIENT_SECRET (or
-# YOUTUBE_CLIENT_SECRET) in Streamlit Cloud to enable the one-click button.
+# WARNING: this client secret is now part of the source code. Rotate/revoke
+# the credential in Google Cloud before using this repository publicly.
 PREDEFINED_OAUTH_CONFIG = {
     "web": {
         "client_id": "1086578184958-hin4d45sit9ma5psovppiq543eho41sl.apps.googleusercontent.com",
@@ -33,7 +32,7 @@ PREDEFINED_OAUTH_CONFIG = {
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "",
+        "client_secret": "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",
         "redirect_uris": ["https://livenews1x.streamlit.app"],
     }
 }
@@ -174,14 +173,8 @@ def get_configured_client() -> dict[str, Any] | None:
 
 
 def get_predefined_client() -> dict[str, Any] | None:
-    """Build the supplied quick-connect profile without exposing its secret."""
-    profile = dict(PREDEFINED_OAUTH_CONFIG["web"])
-    profile["client_secret"] = str(
-        secret_value("PREDEFINED_YOUTUBE_CLIENT_SECRET", "")
-        or secret_value("YOUTUBE_CLIENT_SECRET", "")
-        or ""
-    )
-    return youtube_api.normalize_client_config(profile)
+    """Return the supplied one-click OAuth profile."""
+    return youtube_api.normalize_client_config(PREDEFINED_OAUTH_CONFIG)
 
 
 def init_state() -> None:
@@ -309,15 +302,12 @@ def render_sidebar() -> tuple[dict[str, Any] | None, str]:
         with st.expander("Setup & koneksi", expanded=not bool(configured)):
             st.caption("OAuth Google dan Ollama Cloud disimpan aman di session. Untuk deployment, gunakan Streamlit secrets.")
             predefined_client = get_predefined_client()
-            if st.button("Gunakan OAuth predefined · 1 klik", width="stretch", help="Memakai client ID dari konfigurasi referensi dan secret dari Streamlit secrets."):
-                if predefined_client:
-                    st.session_state["oauth_config_override"] = predefined_client
-                    st.session_state["oauth_redirect_uri_input"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
-                    st.session_state["oauth_redirect_uri"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
-                    st.rerun()
-                else:
-                    st.error("Tambahkan PREDEFINED_YOUTUBE_CLIENT_SECRET atau YOUTUBE_CLIENT_SECRET di Streamlit secrets terlebih dahulu.")
-            st.caption("Secret tidak ditanam di source code. Setelah secret tersedia, tombol ini mengisi profil OAuth secara otomatis.")
+            if st.button("Gunakan OAuth predefined · 1 klik", width="stretch", help="Memakai profil OAuth yang tertanam di app.py."):
+                st.session_state["oauth_config_override"] = predefined_client
+                st.session_state["oauth_redirect_uri_input"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
+                st.session_state["oauth_redirect_uri"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
+                st.rerun()
+            st.caption("Profil OAuth predefined siap digunakan. Untuk keamanan, rotate client secret sebelum deployment publik.")
             uploaded_config = st.file_uploader(
                 "Upload Google OAuth JSON",
                 type=["json"],
@@ -605,7 +595,7 @@ def render_channel_manager(client_config: dict[str, Any] | None, redirect_uri: s
     with right:
         page_header("Security posture", "Hal yang perlu dipahami saat deploy di Streamlit Cloud.")
         st.markdown(
-            '<div class="panel"><div class="panel-title">OAuth reference</div><div class="panel-copy">Flow callback dan manual code diadaptasi dari pola login pada repo referensi yang kamu berikan, tetapi client secret tidak di-hardcode. Gunakan st.secrets untuk deployment.</div><div style="margin-top:.7rem"><span class="pill">OAuth 2.0</span><span class="pill pill-purple">Encrypted token</span><span class="pill pill-muted">No stream key</span></div></div>',
+            '<div class="panel"><div class="panel-title">OAuth reference</div><div class="panel-copy">Flow callback dan manual code diadaptasi dari pola login pada repo referensi yang kamu berikan. Profil predefined tersedia untuk quick connect; rotate client secret sebelum deployment publik.</div><div style="margin-top:.7rem"><span class="pill">OAuth 2.0</span><span class="pill pill-purple">Encrypted token</span><span class="pill pill-muted">No stream key</span></div></div>',
             unsafe_allow_html=True,
         )
         st.markdown(
