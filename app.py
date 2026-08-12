@@ -22,6 +22,22 @@ APP_NAME = "Orbit Studio"
 APP_TAGLINE = "YouTube operations, dibuat lebih rapi."
 NAV_ITEMS = ["Dashboard", "Channel manager", "Media studio", "SEO lab", "Scheduler", "Analytics"]
 TIMEZONES = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Singapore", "UTC"]
+# Quick-connect OAuth profile from the supplied reference project.
+# The client secret is intentionally loaded from Streamlit secrets instead of
+# being committed to source control. Set PREDEFINED_YOUTUBE_CLIENT_SECRET (or
+# YOUTUBE_CLIENT_SECRET) in Streamlit Cloud to enable the one-click button.
+PREDEFINED_OAUTH_CONFIG = {
+    "web": {
+        "client_id": "1086578184958-hin4d45sit9ma5psovppiq543eho41sl.apps.googleusercontent.com",
+        "project_id": "anjelikakozme",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "",
+        "redirect_uris": ["https://livenews1x.streamlit.app"],
+    }
+}
+
 CATEGORIES = {
     "22": "People & Blogs",
     "27": "Education",
@@ -157,6 +173,17 @@ def get_configured_client() -> dict[str, Any] | None:
     return youtube_api.manual_client_config(str(client_id or ""), str(client_secret or ""))
 
 
+def get_predefined_client() -> dict[str, Any] | None:
+    """Build the supplied quick-connect profile without exposing its secret."""
+    profile = dict(PREDEFINED_OAUTH_CONFIG["web"])
+    profile["client_secret"] = str(
+        secret_value("PREDEFINED_YOUTUBE_CLIENT_SECRET", "")
+        or secret_value("YOUTUBE_CLIENT_SECRET", "")
+        or ""
+    )
+    return youtube_api.normalize_client_config(profile)
+
+
 def init_state() -> None:
     defaults = {
         "nav": "Dashboard",
@@ -281,6 +308,16 @@ def render_sidebar() -> tuple[dict[str, Any] | None, str]:
         st.divider()
         with st.expander("Setup & koneksi", expanded=not bool(configured)):
             st.caption("OAuth Google dan Ollama Cloud disimpan aman di session. Untuk deployment, gunakan Streamlit secrets.")
+            predefined_client = get_predefined_client()
+            if st.button("Gunakan OAuth predefined · 1 klik", width="stretch", help="Memakai client ID dari konfigurasi referensi dan secret dari Streamlit secrets."):
+                if predefined_client:
+                    st.session_state["oauth_config_override"] = predefined_client
+                    st.session_state["oauth_redirect_uri_input"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
+                    st.session_state["oauth_redirect_uri"] = PREDEFINED_OAUTH_CONFIG["web"]["redirect_uris"][0]
+                    st.rerun()
+                else:
+                    st.error("Tambahkan PREDEFINED_YOUTUBE_CLIENT_SECRET atau YOUTUBE_CLIENT_SECRET di Streamlit secrets terlebih dahulu.")
+            st.caption("Secret tidak ditanam di source code. Setelah secret tersedia, tombol ini mengisi profil OAuth secara otomatis.")
             uploaded_config = st.file_uploader(
                 "Upload Google OAuth JSON",
                 type=["json"],
