@@ -1,0 +1,14 @@
+# Streamlit / Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# Local application data (OAuth tokens, uploads, generated videos)
+data/
+.streamlit/secrets.toml
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
