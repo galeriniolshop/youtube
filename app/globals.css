@@ -1,0 +1,131 @@
+:root {
+  --bg: #fffdf8;
+  --paper: #ffffff;
+  --ink: #1b2430;
+  --muted: #5d6b7b;
+  --line: #e4e0d6;
+  --accent: #ff4b4b;
+  --info: #e8f4ff;
+  --info-ink: #0c4a6e;
+  --shadow: 0 16px 40px rgba(27, 36, 48, 0.07);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 12% -10%, rgba(255, 75, 75, 0.08), transparent 28%),
+    var(--bg);
+  color: var(--ink);
+}
+button, textarea { font: inherit; }
+
+.app {
+  width: min(760px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.4rem 0 3.2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.15rem;
+}
+.brand-mark {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.65rem;
+  display: grid;
+  place-items: center;
+  background: #fff1f1;
+  border: 1px solid #ffd0d0;
+  font-size: 1.1rem;
+}
+.brand h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: -0.03em;
+}
+.brand p {
+  margin: 0.08rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.sheet {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.editor {
+  width: 100%;
+  min-height: 500px;
+  border: 0;
+  resize: vertical;
+  padding: 1.15rem 1.2rem 1rem;
+  background: transparent;
+  color: var(--ink);
+  line-height: 1.55;
+  outline: none;
+}
+
+.info {
+  margin: 0.9rem 0 0;
+  padding: 0.78rem 0.95rem;
+  border-radius: 10px;
+  background: var(--info);
+  color: var(--info-ink);
+  border: 1px solid #cde7fb;
+  font-size: 0.95rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+.toolbar button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 0.48rem 0.8rem;
+  cursor: pointer;
+}
+.toolbar button:hover { border-color: #c9c3b6; }
+.toolbar button.danger {
+  color: #9f1239;
+  border-color: #fecdd3;
+  background: #fff1f2;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 1.15rem 0 0.75rem;
+}
+
+.foot {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.foot span { display: block; }
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 1rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--line);
+  background: #fcfbf8;
+}
+.status b { color: #334155; font-weight: 600; }

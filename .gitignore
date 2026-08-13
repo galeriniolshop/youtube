@@ -4,9 +4,15 @@ __pycache__/
 .venv/
 .env
 
-# Local application data (OAuth tokens, uploads, generated videos)
+# Local application data (OAuth tokens, uploads, generated videos, notes)
 data/
 .streamlit/secrets.toml
+
+# Next.js / Vercel
+node_modules/
+.next/
+out/
+.vercel
 
 # OS / editor
 .DS_Store
